@@ -11,8 +11,8 @@ logging.basicConfig(
 	datefmt='%Y-%m-%d %H:%M:%S,%03d')
 
 # GLOBAL PARAMETERS FOR STOCHASTIC GRADIENT DESCENT
-step_size=.000001
-max_iters=100000000
+step_size=.00001
+max_iters=1000000
 
 def main():
 
@@ -22,51 +22,55 @@ def main():
 
 	logging.info("\n---------------------------------------------------------------------------\n")
 
-	# # Fit a logistic regression model on train and plot its losses
-	# logging.info("Training logistic regression model (No Bias Term)")
-	# w, losses = trainLogistic(X_train,y_train)
-	# y_pred_train = X_train@w >= 0
-	
-	# logging.info("Learned weight vector: {}".format([np.round(a,4)[0] for a in w]))
-	# logging.info("Train accuracy: {:.4}%".format(np.mean(y_pred_train == y_train)*100))
-	
-	# logging.info("\n---------------------------------------------------------------------------\n")
-
-	X_train_bias = dummyAugment(X_train)
-	
 	# Fit a logistic regression model on train and plot its losses
-	logging.info("Training logistic regression model (Added Bias Term)")
-	w, bias_losses = trainLogistic(X_train_bias,y_train)
-	y_pred_train = X_train_bias@w >= 0
+	logging.info("Training logistic regression model (No Bias Term)")
+	w, losses = trainLogistic(X_train,y_train)
+	y_pred_train = X_train@w >= 0
 	
 	logging.info("Learned weight vector: {}".format([np.round(a,4)[0] for a in w]))
 	logging.info("Train accuracy: {:.4}%".format(np.mean(y_pred_train == y_train)*100))
+	
+	logging.info("\n---------------------------------------------------------------------------\n")
 
+	# X_train_bias = dummyAugment(X_train)
+	
+	# Fit a logistic regression model on train and plot its losses
+	# logging.info("Training logistic regression model (Added Bias Term)")
+	# w, bias_losses = trainLogistic(X_train_bias,y_train)
+	# y_pred_train = X_train_bias@w >= 0
+	
+	# logging.info("Learned weight vector: {}".format([np.round(a,4)[0] for a in w]))
+	# logging.info("Train accuracy: {:.4}%".format(np.mean(y_pred_train == y_train)*100))
+
+
+	pred_y_test = X_test@w >=0
+	test_out = np.concatenate((np.expand_dims(np.array(range(233),dtype=int), axis=1), pred_y_test), axis=1)
+	header = np.array([["id", "type"]])
+	test_out = np.concatenate((header, test_out))
+	np.savetxt('test_predicted.csv', test_out, fmt='%s', delimiter=',')
 
 	plt.figure(figsize=(16,9))
-	# plt.plot(range(len(losses)), losses, label="No Bias Term Added")
-	plt.plot(range(len(bias_losses)), bias_losses, label="Bias Term Added")
+	plt.plot(range(len(losses)), losses, label="No Bias Term Added")
+	# plt.plot(range(len(bias_losses)), bias_losses, label="Bias Term Added")
 	plt.title("Logistic Regression Training Curve")
 	plt.xlabel("Epoch")
 	plt.ylabel("Negative Log Likelihood")
 	plt.legend()
 	plt.show()
-	return
 	logging.info("\n---------------------------------------------------------------------------\n")
 
-	logging.info("Running cross-fold validation for bias case:")
+	# logging.info("Running cross-fold validation for bias case:")
 
-	# Perform k-fold cross
-	for k in [2,3,4, 5, 10, 20, 50]:
-		cv_acc, cv_std = kFoldCrossVal(X_train_bias, y_train, k)
-		logging.info("{}-fold Cross Val Accuracy -- Mean (stdev): {:.4}% ({:.4}%)".format(k,cv_acc*100, cv_std*100))
+	# # Perform k-fold cross
+	# for k in [2,3,4, 5, 10, 20, 50]:
+	# 	cv_acc, cv_std = kFoldCrossVal(X_train_bias, y_train, k)
+	# 	logging.info("{}-fold Cross Val Accuracy -- Mean (stdev): {:.4}% ({:.4}%)".format(k,cv_acc*100, cv_std*100))
 
 	####################################################
 	# Write the code to make your test submission here
 	####################################################
-	
-	# raise Exception('Student error: You haven\'t implemented the code in main() to make test predictions.')
-
+	# X_train_bias = dummyAugment(X_train)
+	# w, bias_losses = trainLogistic(X_train_bias,y_train)
 
 
 ######################################################################
