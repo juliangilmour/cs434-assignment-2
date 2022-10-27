@@ -32,18 +32,20 @@ def main():
 	
 	logging.info("\n---------------------------------------------------------------------------\n")
 
-	# X_train_bias = dummyAugment(X_train)
+	X_train_bias = dummyAugment(X_train)
 	
 	# Fit a logistic regression model on train and plot its losses
-	# logging.info("Training logistic regression model (Added Bias Term)")
-	# w, bias_losses = trainLogistic(X_train_bias,y_train)
-	# y_pred_train = X_train_bias@w >= 0
+	logging.info("Training logistic regression model (Added Bias Term)")
+	w, bias_losses = trainLogistic(X_train_bias,y_train)
+	y_pred_train = X_train_bias@w >= 0
 	
-	# logging.info("Learned weight vector: {}".format([np.round(a,4)[0] for a in w]))
-	# logging.info("Train accuracy: {:.4}%".format(np.mean(y_pred_train == y_train)*100))
+	logging.info("Learned weight vector: {}".format([np.round(a,4)[0] for a in w]))
+	logging.info("Train accuracy: {:.4}%".format(np.mean(y_pred_train == y_train)*100))
 
-
-	pred_y_test = X_test@w >=0
+	#actual test results
+	X_test_bias = dummyAugment(X_test)
+	# pred_y_test = X_test@(w[0:8]) >=0
+	pred_y_test = X_test_bias@w >=0
 	test_out = np.concatenate((np.expand_dims(np.array(range(233),dtype=int), axis=1), pred_y_test), axis=1)
 	header = np.array([["id", "type"]])
 	test_out = np.concatenate((header, test_out))
@@ -51,7 +53,7 @@ def main():
 
 	plt.figure(figsize=(16,9))
 	plt.plot(range(len(losses)), losses, label="No Bias Term Added")
-	# plt.plot(range(len(bias_losses)), bias_losses, label="Bias Term Added")
+	plt.plot(range(len(bias_losses)), bias_losses, label="Bias Term Added")
 	plt.title("Logistic Regression Training Curve")
 	plt.xlabel("Epoch")
 	plt.ylabel("Negative Log Likelihood")
@@ -195,7 +197,8 @@ def trainLogistic(X,y, max_iters=max_iters, step_size=step_size):
 #
 ######################################################################
 def dummyAugment(X):
-	return np.hstack([X, np.ones((X.shape[0],1))])
+	aug_X = np.hstack([X, np.ones((X.shape[0],1))])
+	return aug_X
 
 
 
