@@ -8,11 +8,11 @@ import logging
 logging.basicConfig(
 	format='%(asctime)s %(levelname)-8s %(message)s',
 	level=logging.INFO,
-	datefmt='%Y-%m-%d %H:%M:%S')
+	datefmt='%Y-%m-%d %H:%M:%S,%03d')
 
 # GLOBAL PARAMETERS FOR STOCHASTIC GRADIENT DESCENT
 step_size=.000001
-max_iters=1000000000
+max_iters=100000000
 
 def main():
 
@@ -22,15 +22,15 @@ def main():
 
 	logging.info("\n---------------------------------------------------------------------------\n")
 
-	# Fit a logistic regression model on train and plot its losses
-	logging.info("Training logistic regression model (No Bias Term)")
-	w, losses = trainLogistic(X_train,y_train)
-	y_pred_train = X_train@w >= 0
+	# # Fit a logistic regression model on train and plot its losses
+	# logging.info("Training logistic regression model (No Bias Term)")
+	# w, losses = trainLogistic(X_train,y_train)
+	# y_pred_train = X_train@w >= 0
 	
-	logging.info("Learned weight vector: {}".format([np.round(a,4)[0] for a in w]))
-	logging.info("Train accuracy: {:.4}%".format(np.mean(y_pred_train == y_train)*100))
+	# logging.info("Learned weight vector: {}".format([np.round(a,4)[0] for a in w]))
+	# logging.info("Train accuracy: {:.4}%".format(np.mean(y_pred_train == y_train)*100))
 	
-	logging.info("\n---------------------------------------------------------------------------\n")
+	# logging.info("\n---------------------------------------------------------------------------\n")
 
 	X_train_bias = dummyAugment(X_train)
 	
@@ -44,14 +44,14 @@ def main():
 
 
 	plt.figure(figsize=(16,9))
-	plt.plot(range(len(losses)), losses, label="No Bias Term Added")
+	# plt.plot(range(len(losses)), losses, label="No Bias Term Added")
 	plt.plot(range(len(bias_losses)), bias_losses, label="Bias Term Added")
 	plt.title("Logistic Regression Training Curve")
 	plt.xlabel("Epoch")
 	plt.ylabel("Negative Log Likelihood")
 	plt.legend()
 	plt.show()
-
+	return
 	logging.info("\n---------------------------------------------------------------------------\n")
 
 	logging.info("Running cross-fold validation for bias case:")
